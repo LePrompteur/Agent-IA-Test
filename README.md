@@ -55,3 +55,14 @@ Projet Railway `agent-ia-test`, environnement `dev`, service `qa-agent` (build `
 - **Variables** : `AGENT_ARGS` (défaut `--run-all --filter eval`), `ANTHROPIC_API_KEY` (à saisir dans le tableau de bord), `APP_BASE_URL` et identifiants pour une application réelle.
 - **Rapports** : volume `qa-reports` monté sur `/app/reports`.
 - **Exécution planifiée** : renseigner un « Cron Schedule » sur le service (chaque exécution consomme des jetons Claude).
+
+## Base de données (Supabase auto-hébergé sur Railway) et migrations
+
+- Supabase est déployé dans l'environnement Railway `dev` (modèle `supabase` : Postgres, Studio, Auth, REST, Realtime, Storage, pooler Supavisor, passerelle Envoy). Redis tourne à côté (`REDIS_URL` en variable de référence).
+- **Migrations** : fichiers SQL horodatés dans `supabase/migrations/` (`supabase migration new <nom>`).
+- **Workflow `.github/workflows/db-migrations.yml`** :
+  - PR modifiant `supabase/migrations/**` → simulation puis application sur la base de dev (secret `SUPABASE_DEV_DB_URL`) ;
+  - merge sur `main` → application sur la production (secret `SUPABASE_PROD_DB_URL`, environnement GitHub `production` à protéger par une validation manuelle) ;
+  - exécutions sérialisées par base ; PR issues de forks ignorées (pas d'accès aux secrets).
+- **Secret à créer dans GitHub** (Settings → Secrets and variables → Actions) : `SUPABASE_DEV_DB_URL` = valeur de `POSTGRES_URL` du service Postgres Railway (connexion publique via proxy TCP).
+- Une migration appliquée n'est pas annulée automatiquement : pour revenir en arrière, écrire une nouvelle migration inverse.
