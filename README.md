@@ -45,3 +45,27 @@ Rapports : `reports/<horodatage>_<id>/report.md` (+ `report.json`, `screenshots/
 pytest tests/evals/            # 19 méta-tests déterministes, sans appel API
 pytest tests/evals/ -m live    # evals de bout en bout avec Claude (consomment des jetons)
 ```
+
+## Déploiement Railway
+
+Projet Railway `agent-ia-test`, environnement `dev`, service `qa-agent` (build `Dockerfile`, config `railway.json`).
+
+- **Déclenchement** : chaque push sur la branche suivie reconstruit l'image et lance une exécution. Pour relancer sans push : « Redeploy » dans le tableau de bord.
+- **Une exécution** = méta-tests de l'image, puis `python src/main.py $AGENT_ARGS` si `ANTHROPIC_API_KEY` est défini. Le conteneur s'arrête ensuite (pas de redémarrage automatique).
+- **Variables** : `AGENT_ARGS` (défaut `--run-all --filter eval`), `ANTHROPIC_API_KEY` (à saisir dans le tableau de bord), `APP_BASE_URL` et identifiants pour une application réelle.
+- **Rapports** : volume `qa-reports` monté sur `/app/reports`.
+- **Exécution planifiée** : renseigner un « Cron Schedule » sur le service (chaque exécution consomme des jetons Claude).
+
+## Base de données (Postgres sur Railway) et migrations
+
+- **Postgres** : service Railway `Postgres` (image `postgres-ssl:18`) dans l'environnement `dev`, volume de 500 Mo (limite de l'offre Hobby).
+  - Accès interne : `DATABASE_URL` (déjà référencée sur `qa-agent`).
+  - Accès public chiffré (pour GitHub Actions) : `DATABASE_PUBLIC_URL`, via proxy TCP.
+- **Redis** : service Railway `Redis` (`REDIS_URL`, déjà référencée sur `qa-agent`).
+- **Migrations** : fichiers SQL horodatés dans `supabase/migrations/`. Nom du dossier = convention de la CLI Supabase, utilisée comme outil de migration ; elle fonctionne sur tout Postgres et trace l'historique dans le schéma `supabase_migrations`. Ne jamais modifier le schéma à la main : toute modification passe par une migration versionnée.
+- **Workflow `.github/workflows/db-migrations.yml`** :
+  - PR modifiant `supabase/migrations/**` → simulation puis application sur la base de dev (secret `DEV_DATABASE_URL`) ;
+  - merge sur `main` → application sur la production (secret `PROD_DATABASE_URL`, environnement GitHub `production` à protéger par une validation manuelle) ;
+  - exécutions sérialisées par base ; PR issues de forks ignorées (pas d'accès aux secrets).
+- **Secret GitHub à créer** (Settings → Secrets and variables → Actions) : `DEV_DATABASE_URL` = valeur de `DATABASE_PUBLIC_URL` du service Postgres (Railway → Postgres → Variables).
+- Une migration appliquée n'est pas annulée automatiquement : pour revenir en arrière, écrire une nouvelle migration inverse.

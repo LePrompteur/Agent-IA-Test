@@ -1,0 +1,51 @@
+name: Migrations base de données
+
+# PR → migrations appliquées à la base de dev (Postgres Railway, environnement dev).
+# Merge sur main → migrations appliquées à la base de production, si le secret existe.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths: ["supabase/migrations/**"]
+  push:
+    branches: [main]
+    paths: ["supabase/migrations/**"]
+  workflow_dispatch:
+
+# Outil : CLI Supabase (`supabase db push`), compatible avec tout Postgres ; historique dans le schéma supabase_migrations.
+# Une seule migration à la fois par base : pas d'exécutions concurrentes.
+concurrency:
+  group: db-migrations-${{ github.event_name == 'push' && 'prod' || 'dev' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'push' && 'production' || 'dev' }}
+    env:
+      DB_URL: ${{ github.event_name == 'push' && secrets.PROD_DATABASE_URL || secrets.DEV_DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vérifier la présence du secret
+        id: guard
+        run: |
+          if [ -z "$DB_URL" ]; then
+            echo "::warning::Secret de connexion absent (PR depuis un fork, ou secret non configuré) : migrations non appliquées."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: supabase/setup-cli@v1
+        if: steps.guard.outputs.skip != 'true'
+        with:
+          version: latest
+
+      - name: Migrations en attente (simulation)
+        if: steps.guard.outputs.skip != 'true'
+        run: supabase db push --db-url "$DB_URL" --dry-run
+
+      - name: Appliquer les migrations
+        if: steps.guard.outputs.skip != 'true'
+        run: supabase db push --db-url "$DB_URL"
