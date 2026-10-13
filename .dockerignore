@@ -1,0 +1,6 @@
+.git
+.env
+reports/2*
+**/__pycache__
+.pytest_cache
+tests/fixtures/uploads/large.bin
