@@ -1,0 +1,15 @@
+# Dépendances et builds
+node_modules/
+.next/
+dist/
+.astro/
+out/
+
+# Secrets : seul .env.example est versionné
+.env
+.env.*
+!.env.example
+
+# Divers
+*.log
+.DS_Store

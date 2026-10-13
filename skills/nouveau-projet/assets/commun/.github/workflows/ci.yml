@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Recherche de secrets
+        run: bash scripts/verify.sh secrets .
+      - name: Build
+        run: npm run build
+      - name: Aucune clé côté navigateur
+        run: bash scripts/verify.sh bundle .
