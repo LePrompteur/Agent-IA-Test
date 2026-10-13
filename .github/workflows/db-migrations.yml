@@ -1,6 +1,6 @@
 name: Migrations base de données
 
-# PR → migrations appliquées à la base de dev (Supabase sur Railway, environnement dev).
+# PR → migrations appliquées à la base de dev (Postgres Railway, environnement dev).
 # Merge sur main → migrations appliquées à la base de production, si le secret existe.
 on:
   pull_request:
@@ -11,6 +11,7 @@ on:
     paths: ["supabase/migrations/**"]
   workflow_dispatch:
 
+# Outil : CLI Supabase (`supabase db push`), compatible avec tout Postgres ; historique dans le schéma supabase_migrations.
 # Une seule migration à la fois par base : pas d'exécutions concurrentes.
 concurrency:
   group: db-migrations-${{ github.event_name == 'push' && 'prod' || 'dev' }}
@@ -24,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.event_name == 'push' && 'production' || 'dev' }}
     env:
-      DB_URL: ${{ github.event_name == 'push' && secrets.SUPABASE_PROD_DB_URL || secrets.SUPABASE_DEV_DB_URL }}
+      DB_URL: ${{ github.event_name == 'push' && secrets.PROD_DATABASE_URL || secrets.DEV_DATABASE_URL }}
     steps:
       - uses: actions/checkout@v4
 

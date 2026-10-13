@@ -56,14 +56,16 @@ Projet Railway `agent-ia-test`, environnement `dev`, service `qa-agent` (build `
 - **Rapports** : volume `qa-reports` monté sur `/app/reports`.
 - **Exécution planifiée** : renseigner un « Cron Schedule » sur le service (chaque exécution consomme des jetons Claude).
 
-## Base de données (Supabase cloud) et migrations
+## Base de données (Postgres sur Railway) et migrations
 
-- **Supabase** : projet `agent-ia-test` (réf. `dvssyttbibnqwqjetarm`, région Paris `eu-west-3`), organisation « Le Prompteur », offre gratuite. URL : `https://dvssyttbibnqwqjetarm.supabase.co` (variables partagées Railway `SUPABASE_URL`, `SUPABASE_PROJECT_REF`).
-- **Redis** : service Railway `Redis` dans l'environnement `dev` (`REDIS_URL` via variable de référence `${{Redis.REDIS_URL}}`).
-- **Migrations** : fichiers SQL horodatés dans `supabase/migrations/` (`supabase migration new <nom>`). Ne jamais modifier le schéma depuis le tableau de bord : toute modification passe par une migration versionnée.
+- **Postgres** : service Railway `Postgres` (image `postgres-ssl:18`) dans l'environnement `dev`, volume de 500 Mo (limite de l'offre Hobby).
+  - Accès interne : `DATABASE_URL` (déjà référencée sur `qa-agent`).
+  - Accès public chiffré (pour GitHub Actions) : `DATABASE_PUBLIC_URL`, via proxy TCP.
+- **Redis** : service Railway `Redis` (`REDIS_URL`, déjà référencée sur `qa-agent`).
+- **Migrations** : fichiers SQL horodatés dans `supabase/migrations/`. Nom du dossier = convention de la CLI Supabase, utilisée comme outil de migration ; elle fonctionne sur tout Postgres et trace l'historique dans le schéma `supabase_migrations`. Ne jamais modifier le schéma à la main : toute modification passe par une migration versionnée.
 - **Workflow `.github/workflows/db-migrations.yml`** :
-  - PR modifiant `supabase/migrations/**` → simulation puis application sur la base de dev (secret `SUPABASE_DEV_DB_URL`) ;
-  - merge sur `main` → application sur la production (secret `SUPABASE_PROD_DB_URL`, environnement GitHub `production` à protéger par une validation manuelle) ;
+  - PR modifiant `supabase/migrations/**` → simulation puis application sur la base de dev (secret `DEV_DATABASE_URL`) ;
+  - merge sur `main` → application sur la production (secret `PROD_DATABASE_URL`, environnement GitHub `production` à protéger par une validation manuelle) ;
   - exécutions sérialisées par base ; PR issues de forks ignorées (pas d'accès aux secrets).
-- **Secret GitHub à créer** (Settings → Secrets and variables → Actions) : `SUPABASE_DEV_DB_URL` = chaîne « Session pooler » du projet (Supabase → Connect → Session pooler, port 5432), mot de passe inclus. La connexion directe `db.<ref>.supabase.co` est en IPv6 seulement et n'est pas joignable depuis les runners GitHub.
+- **Secret GitHub à créer** (Settings → Secrets and variables → Actions) : `DEV_DATABASE_URL` = valeur de `DATABASE_PUBLIC_URL` du service Postgres (Railway → Postgres → Variables).
 - Une migration appliquée n'est pas annulée automatiquement : pour revenir en arrière, écrire une nouvelle migration inverse.
