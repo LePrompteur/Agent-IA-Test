@@ -1,0 +1,267 @@
+{
+  "browser": [
+    {
+      "name": "navigate_to_url",
+      "description": "Charge une URL dans le navigateur et attend le chargement du DOM. Renvoie le code HTTP du document et l'URL finale (après redirections).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string", "description": "L'URL complète à charger."}
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "capture_page_state",
+      "description": "Extrait l'état de la page : URL, titre, éléments interactifs visibles avec une référence courte (e1, e2…), leur rôle d'accessibilité, leur nom accessible et leur valeur, les alertes/dialogues, les overlays bloquants et un extrait du texte visible. Les références ne sont valables que jusqu'au prochain changement de page : en cas d'erreur 'référence introuvable', rappelez cet outil.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "include_screenshot": {"type": "boolean", "description": "Joindre une capture d'écran (coûteux : à réserver aux vérifications visuelles)."}
+        }
+      }
+    },
+    {
+      "name": "click_element",
+      "description": "Clique sur un élément. element_id accepte : une référence issue de capture_page_state (ex. 'e12', recommandé), 'role:nom accessible' (ex. 'button:Se connecter'), 'text=…', 'label=…', ou en dernier recours un sélecteur CSS.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "element_id": {"type": "string", "description": "Référence, rôle:nom, text=, label= ou sélecteur CSS."},
+          "description": {"type": "string", "description": "Intention fonctionnelle de l'action (ex. 'valider le formulaire de connexion')."},
+          "repeat": {"type": "integer", "minimum": 1, "maximum": 5, "description": "Nombre de clics enchaînés sans délai (test de double soumission). Défaut : 1."}
+        },
+        "required": ["element_id"]
+      }
+    },
+    {
+      "name": "fill_input",
+      "description": "Remplace le contenu d'un champ de saisie par la valeur fournie.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "element_id": {"type": "string", "description": "Identifiant du champ (mêmes formats que click_element)."},
+          "value": {"type": "string", "description": "La valeur à saisir."}
+        },
+        "required": ["element_id", "value"]
+      }
+    },
+    {
+      "name": "select_option",
+      "description": "Sélectionne une option dans une liste déroulante <select> par son libellé ou sa valeur.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "element_id": {"type": "string"},
+          "option": {"type": "string", "description": "Libellé visible ou valeur de l'option."}
+        },
+        "required": ["element_id", "option"]
+      }
+    },
+    {
+      "name": "upload_file",
+      "description": "Téléverse un fichier dans un champ <input type=file>. Le fichier doit se trouver dans le dossier d'upload autorisé (config 'upload_dir').",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "element_id": {"type": "string"},
+          "file_name": {"type": "string", "description": "Nom du fichier dans le dossier d'upload autorisé."}
+        },
+        "required": ["element_id", "file_name"]
+      }
+    },
+    {
+      "name": "press_key",
+      "description": "Appuie sur une touche clavier (ex. 'Enter', 'Escape', 'Tab'), éventuellement après avoir donné le focus à un élément.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "key": {"type": "string"},
+          "element_id": {"type": "string", "description": "Optionnel : élément qui reçoit la touche."}
+        },
+        "required": ["key"]
+      }
+    },
+    {
+      "name": "browser_navigation",
+      "description": "Utilise les fonctions système du navigateur : précédent, suivant ou rechargement forcé (F5).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "action": {"type": "string", "enum": ["back", "forward", "reload"]}
+        },
+        "required": ["action"]
+      }
+    },
+    {
+      "name": "set_viewport",
+      "description": "Change la taille de la fenêtre (ex. 375x812 mobile, 768x1024 tablette, 1920x1080 desktop).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "width": {"type": "integer", "minimum": 200, "maximum": 3840},
+          "height": {"type": "integer", "minimum": 200, "maximum": 2160}
+        },
+        "required": ["width", "height"]
+      }
+    },
+    {
+      "name": "wait_for",
+      "description": "Attend qu'un texte apparaisse, qu'un texte disparaisse (spinner, 'Chargement…') ou, à défaut, une durée fixe. Plafonné par la configuration.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "text_visible": {"type": "string", "description": "Texte dont on attend l'apparition."},
+          "text_hidden": {"type": "string", "description": "Texte dont on attend la disparition."},
+          "timeout_seconds": {"type": "number", "minimum": 0.5, "maximum": 30}
+        }
+      }
+    },
+    {
+      "name": "get_console_logs",
+      "description": "Récupère les erreurs et avertissements de la console JavaScript, les exceptions non interceptées et les requêtes HTTP en erreur (4xx/5xx ou échec réseau) depuis le début du test.",
+      "input_schema": {"type": "object", "properties": {}}
+    },
+    {
+      "name": "get_network_log",
+      "description": "Liste les requêtes HTTP observées (méthode, URL, statut, type, en-têtes de requête utiles, payload envoyé, extrait de la réponse pour XHR/fetch). Permet de vérifier un contrat d'API.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url_contains": {"type": "string", "description": "Filtre sur l'URL."},
+          "only_api": {"type": "boolean", "description": "Ne garder que XHR/fetch (défaut : true)."},
+          "last_n": {"type": "integer", "minimum": 1, "maximum": 100}
+        }
+      }
+    },
+    {
+      "name": "mock_http_response",
+      "description": "Intercepte les requêtes dont l'URL correspond au motif (glob, ex. '**/api/profile') et renvoie une réponse simulée (ex. 500, 403). Sert à éprouver la gestion des pannes serveur. Les réponses simulées sont signalées comme telles dans les journaux.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url_pattern": {"type": "string"},
+          "status": {"type": "integer", "minimum": 100, "maximum": 599},
+          "body": {"type": "string"},
+          "content_type": {"type": "string"}
+        },
+        "required": ["url_pattern", "status"]
+      }
+    },
+    {
+      "name": "clear_http_mocks",
+      "description": "Supprime toutes les interceptions installées par mock_http_response.",
+      "input_schema": {"type": "object", "properties": {}}
+    },
+    {
+      "name": "set_network_offline",
+      "description": "Coupe (true) ou rétablit (false) la connexion réseau du navigateur.",
+      "input_schema": {
+        "type": "object",
+        "properties": {"offline": {"type": "boolean"}},
+        "required": ["offline"]
+      }
+    },
+    {
+      "name": "inspect_storage",
+      "description": "Liste les cookies (valeurs masquées) et les clés du localStorage / sessionStorage de l'origine courante. Sert à vérifier une session ou son invalidation.",
+      "input_schema": {"type": "object", "properties": {}}
+    },
+    {
+      "name": "assert_condition",
+      "description": "Enregistre une assertion fonctionnelle. Le verdict final est recoupé par le runner avec les journaux réseau : une assertion PASSED contredite par une erreur HTTP non attendue sera requalifiée.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "expectation": {"type": "string", "description": "Attendu fonctionnel."},
+          "status": {"type": "string", "enum": ["PASSED", "FAILED"], "description": "Résultat de l'assertion."},
+          "reason": {"type": "string", "description": "Justification détaillée, avec les preuves observées (texte, URL, statut HTTP)."}
+        },
+        "required": ["expectation", "status", "reason"]
+      }
+    },
+    {
+      "name": "report_result",
+      "description": "Termine le test et transmet le verdict. À appeler une seule fois, en dernier. BLOCKED = le scénario n'a pas pu être exécuté jusqu'au bout (élément introuvable, action sans effet, environnement indisponible).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "status": {"type": "string", "enum": ["PASSED", "FAILED", "BLOCKED"]},
+          "summary": {"type": "string", "description": "Résumé factuel de l'exécution."},
+          "root_cause": {"type": "string", "description": "Cause racine en cas d'échec ou de blocage : symptôme, origine probable (front, API, données, environnement), preuves."},
+          "suspected_component": {"type": "string", "description": "Composant, route d'API ou fichier probablement en cause."},
+          "evidence": {"type": "array", "items": {"type": "string"}, "description": "Preuves : messages d'erreur exacts, statuts HTTP, URL."}
+        },
+        "required": ["status", "summary"]
+      }
+    }
+  ],
+  "code": [
+    {
+      "name": "list_source_files",
+      "description": "Liste les fichiers du code source applicatif (dossier --source-dir), filtrés par motif glob.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "glob": {"type": "string", "description": "Motif glob relatif (ex. '**/*.js'). Défaut : '**/*'."}
+        }
+      }
+    },
+    {
+      "name": "search_code",
+      "description": "Recherche une expression régulière dans le code source. Renvoie fichier:ligne:contenu.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "pattern": {"type": "string", "description": "Expression régulière Python."},
+          "glob": {"type": "string", "description": "Filtre de fichiers (ex. '**/*.py')."}
+        },
+        "required": ["pattern"]
+      }
+    },
+    {
+      "name": "read_source_file",
+      "description": "Lit un fichier source avec numéros de ligne (fenêtre de 400 lignes maximum).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {"type": "string", "description": "Chemin relatif au dossier source."},
+          "start_line": {"type": "integer", "minimum": 1},
+          "end_line": {"type": "integer", "minimum": 1}
+        },
+        "required": ["path"]
+      }
+    },
+    {
+      "name": "propose_fix",
+      "description": "Propose un correctif par remplacement exact d'un extrait de code (old_string doit apparaître une seule fois dans le fichier). Le correctif est enregistré sous forme de diff ; il n'est écrit sur disque que si l'agent a été lancé avec --apply.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {"type": "string"},
+          "old_string": {"type": "string", "description": "Extrait exact à remplacer, indentation comprise."},
+          "new_string": {"type": "string", "description": "Code de remplacement."},
+          "rationale": {"type": "string", "description": "Pourquoi ce correctif traite la cause racine."}
+        },
+        "required": ["path", "old_string", "new_string", "rationale"]
+      }
+    }
+  ],
+  "diagnosis": [
+    {
+      "name": "report_diagnosis",
+      "description": "Termine la session de débug et transmet le diagnostic. À appeler une seule fois, en dernier.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "summary": {"type": "string", "description": "Ce qui a été observé."},
+          "root_cause": {"type": "string", "description": "Cause racine : symptôme, mécanisme, localisation (fichier:ligne si connue)."},
+          "confidence": {"type": "string", "enum": ["haute", "moyenne", "faible"]},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "recommendations": {"type": "array", "items": {"type": "string"}, "description": "Actions complémentaires (tests à ajouter, vérifications manuelles)."}
+        },
+        "required": ["summary", "root_cause", "confidence"]
+      }
+    }
+  ]
+}

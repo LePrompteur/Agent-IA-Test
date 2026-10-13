@@ -1,0 +1,22 @@
+{
+  "id": "TC_SEC_002",
+  "name": "Neutralisation XSS",
+  "category": "Limites & sécurité",
+  "priority": "P2",
+  "reference": "§4.2",
+  "target_url": "${FIXTURE_BASE_URL}/comment",
+  "objective": "Soumettre des charges XSS inoffensives et vérifier qu'elles sont affichées comme du texte, sans exécution.",
+  "steps": [
+    "Publier : <script>alert('xss')</script>",
+    "Publier : <img src=x onerror=alert('xss')>",
+    "Vérifier l'affichage et l'absence de dialogue ou d'erreur console liée."
+  ],
+  "success_criteria": [
+    "Les charges sont affichées littéralement comme texte.",
+    "Aucun script n'est exécuté (aucune boîte de dialogue, aucune erreur console liée à l'injection)."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ],
+  "notes": "À n'exécuter que sur des applications dont vous êtes responsable ou pour lesquelles vous disposez d'une autorisation écrite."
+}

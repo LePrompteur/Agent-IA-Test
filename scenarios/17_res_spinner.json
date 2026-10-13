@@ -1,0 +1,21 @@
+{
+  "id": "TC_RES_004",
+  "name": "Attente de la disparition d'un indicateur de chargement",
+  "category": "Résilience UI",
+  "priority": "P1",
+  "reference": "§2.2",
+  "target_url": "${FIXTURE_BASE_URL}/slow",
+  "objective": "Attendre la disparition du spinner 'Chargement…' avant d'interagir.",
+  "steps": [
+    "Charger la page.",
+    "Attendre la disparition du texte 'Chargement…' (wait_for text_hidden).",
+    "Vérifier que le bouton est alors présent."
+  ],
+  "success_criteria": [
+    "Le spinner a disparu avant toute interaction.",
+    "Le bouton 'Afficher les résultats' est visible après la disparition du spinner."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

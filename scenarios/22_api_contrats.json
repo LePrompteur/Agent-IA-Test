@@ -1,0 +1,20 @@
+{
+  "id": "TC_API_001",
+  "name": "Inspection des contrats d'API",
+  "category": "Inspection API",
+  "priority": "P1",
+  "reference": "§3.1",
+  "target_url": "${APP_BASE_URL}${APP_API_FLOW_PATH:-/}",
+  "objective": "Exécuter une opération d'écriture représentative et vérifier la méthode, les en-têtes et la structure du payload envoyé.",
+  "steps": [
+    "Réaliser une action qui envoie des données (formulaire, ajout au panier…).",
+    "Lister les requêtes XHR/fetch avec get_network_log.",
+    "Vérifier méthode, Content-Type et champs du payload."
+  ],
+  "success_criteria": [
+    "La requête d'écriture utilise la méthode attendue (POST/PUT/PATCH).",
+    "Le Content-Type est cohérent avec le payload.",
+    "Le payload contient les champs saisis, sans donnée sensible superflue."
+  ],
+  "notes": "Préciser dans APP_API_FLOW_PATH la page de départ de l'opération à contrôler."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "TC_E2E_011",
+  "name": "Filtrage multi-critères",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.4",
+  "target_url": "${APP_BASE_URL}${APP_SEARCH_PATH:-/recherche}",
+  "objective": "Appliquer simultanément plusieurs filtres (prix, catégorie, note) et valider strictement la liste résultante.",
+  "steps": [
+    "Appliquer un filtre de catégorie.",
+    "Ajouter une fourchette de prix.",
+    "Ajouter une note minimale.",
+    "Vérifier chaque résultat affiché."
+  ],
+  "success_criteria": [
+    "Chaque résultat affiché respecte tous les filtres actifs.",
+    "Le compteur de résultats correspond au nombre d'éléments affichés.",
+    "Retirer un filtre élargit la liste."
+  ]
+}

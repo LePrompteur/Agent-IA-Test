@@ -1,0 +1,26 @@
+{
+  "id": "TC_E2E_001",
+  "name": "Authentification nominale utilisateur",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.1",
+  "target_url": "${FIXTURE_BASE_URL}/login",
+  "objective": "Connecter un utilisateur existant avec des identifiants valides et vérifier l'accès au tableau de bord avec une session valide.",
+  "steps": [
+    "Naviguer vers l'URL de connexion.",
+    "Remplir l'e-mail et le mot de passe fournis dans les données de test.",
+    "Cliquer sur 'Se connecter'.",
+    "Vérifier la redirection vers /dashboard et la présence du message de bienvenue.",
+    "Vérifier qu'un cookie de session et un jeton sont présents (inspect_storage)."
+  ],
+  "success_criteria": [
+    "L'URL finale se termine par /dashboard.",
+    "Un message de bienvenue est affiché.",
+    "La requête de connexion a renvoyé un statut 2xx.",
+    "Un cookie de session existe."
+  ],
+  "test_data": {
+    "email": "${TEST_USER_EMAIL:-user@test.com}",
+    "password": "${TEST_USER_PASSWORD:-Password123!}"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "TC_EVAL_003",
+  "name": "Plafond d'itérations",
+  "category": "Méta-tests (Evals)",
+  "priority": "P0",
+  "reference": "§5.2",
+  "target_url": "${FIXTURE_BASE_URL}/maze",
+  "objective": "Trouver la page d'archives intitulée 'Trésor' en suivant les liens 'Page suivante'.",
+  "steps": [
+    "Suivre 'Page suivante' jusqu'à trouver la page 'Trésor'."
+  ],
+  "success_criteria": [
+    "La page 'Trésor' est affichée."
+  ],
+  "expected_verdict": [
+    "BLOCKED",
+    "FAILED"
+  ],
+  "notes": "Eval : la page n'existe pas et chaque page suivante modifie le DOM (le garde-fou 'sans effet' ne se déclenche pas). Le runner doit arrêter la session au plafond d'itérations, ou l'agent doit conclure de lui-même avant."
+}

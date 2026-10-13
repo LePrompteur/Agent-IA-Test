@@ -1,0 +1,26 @@
+{
+  "id": "TC_API_005",
+  "name": "Données extrêmes et payloads limites",
+  "category": "Inspection API",
+  "priority": "P1",
+  "reference": "§3.3",
+  "target_url": "${FIXTURE_BASE_URL}/comment",
+  "objective": "Soumettre des données limites (texte > 10 000 caractères, émojis, Unicode combiné, contenu vide) et vérifier la robustesse des validateurs.",
+  "steps": [
+    "Publier un commentaire de 10 001 caractères ('a' répété).",
+    "Publier un commentaire contenant émojis et Unicode : 'Héhé 🏠🔑 ẞ Ω 𝔘𝔫𝔦𝔠𝔬𝔡𝔢 مرحبا'.",
+    "Publier un commentaire vide."
+  ],
+  "success_criteria": [
+    "Le texte trop long est rejeté avec un message clair (4xx, pas de 5xx).",
+    "Le texte Unicode est publié et affiché à l'identique.",
+    "Le commentaire vide est refusé avec un message."
+  ],
+  "expected_http_errors": [
+    413,
+    422
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

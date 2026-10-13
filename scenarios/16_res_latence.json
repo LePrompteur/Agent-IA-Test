@@ -1,0 +1,21 @@
+{
+  "id": "TC_RES_003",
+  "name": "Affichage différé d'un composant (latence 3-8 s)",
+  "category": "Résilience UI",
+  "priority": "P1",
+  "reference": "§2.2",
+  "target_url": "${FIXTURE_BASE_URL}/slow",
+  "objective": "Attendre l'apparition différée du bouton 'Afficher les résultats', cliquer et vérifier le chargement des résultats.",
+  "steps": [
+    "Charger la page.",
+    "Attendre la disponibilité effective du bouton sans multiplier les captures inutiles.",
+    "Cliquer et vérifier le message."
+  ],
+  "success_criteria": [
+    "Le bouton est utilisé dès qu'il est disponible.",
+    "Le message 'résultats chargés' apparaît et la requête /api/results renvoie 200."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

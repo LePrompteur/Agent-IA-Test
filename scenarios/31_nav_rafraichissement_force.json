@@ -1,0 +1,20 @@
+{
+  "id": "TC_NAV_002",
+  "name": "Rafraîchissement forcé pendant un traitement",
+  "category": "Limites & sécurité",
+  "priority": "P2",
+  "reference": "§4.3",
+  "target_url": "${FIXTURE_BASE_URL}/order",
+  "objective": "Recharger la page pendant le traitement d'une commande et vérifier la reprise d'état.",
+  "steps": [
+    "Cliquer sur 'Passer la commande' puis recharger immédiatement (browser_navigation reload).",
+    "Relever le nombre de commandes enregistrées après rechargement."
+  ],
+  "success_criteria": [
+    "Après rechargement, la page est fonctionnelle.",
+    "Le nombre de commandes reflète au plus une commande supplémentaire (pas de doublon)."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

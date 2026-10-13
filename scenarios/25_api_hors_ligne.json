@@ -1,0 +1,21 @@
+{
+  "id": "TC_API_004",
+  "name": "Mode hors ligne et perte de connexion",
+  "category": "Inspection API",
+  "priority": "P1",
+  "reference": "§3.2",
+  "target_url": "${FIXTURE_BASE_URL}/profile",
+  "objective": "Couper le réseau, vérifier le comportement de l'application, puis rétablir la connexion.",
+  "steps": [
+    "Charger la page.",
+    "Couper le réseau et capturer l'état.",
+    "Rétablir le réseau et vérifier la reprise."
+  ],
+  "success_criteria": [
+    "Un message signale la perte de connexion.",
+    "Au rétablissement, le message disparaît et le profil se recharge."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

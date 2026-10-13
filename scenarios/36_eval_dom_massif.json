@@ -1,0 +1,21 @@
+{
+  "id": "TC_EVAL_005",
+  "name": "DOM volumineux (> 5 000 nœuds)",
+  "category": "Méta-tests (Evals)",
+  "priority": "P0",
+  "reference": "§5.4",
+  "target_url": "${FIXTURE_BASE_URL}/big-dom",
+  "objective": "Valider la sélection sur un catalogue de plus de 5 000 nœuds DOM.",
+  "steps": [
+    "Charger la page.",
+    "Cliquer sur 'Valider la sélection'.",
+    "Vérifier le message."
+  ],
+  "success_criteria": [
+    "Le message 'Sélection validée' est affiché."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ],
+  "notes": "Eval : vérifie que l'extraction de l'état reste compacte. La taille de l'état est aussi contrôlée par tests/evals/test_mechanics.py."
+}

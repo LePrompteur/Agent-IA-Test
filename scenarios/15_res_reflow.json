@@ -1,0 +1,18 @@
+{
+  "id": "TC_RES_002",
+  "name": "Repositionnement d'éléments (reflow)",
+  "category": "Résilience UI",
+  "priority": "P1",
+  "reference": "§2.1",
+  "target_url": "${FIXTURE_BASE_URL}/mutating",
+  "objective": "Vérifier que l'agent retrouve le bouton d'action quel que soit son emplacement visuel (ordre flex modifié aléatoirement).",
+  "steps": [
+    "Charger la page trois fois (reload) et cliquer à chaque fois sur 'Ajouter au panier'."
+  ],
+  "success_criteria": [
+    "Les trois clics produisent le message de confirmation."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

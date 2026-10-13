@@ -1,0 +1,47 @@
+# Claude QA Testing Agent
+
+Agent autonome de tests utilisateurs (E2E / Playwright), de diagnostic de cause racine et de correction de code, invocable en ligne de commande.
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+python -m playwright install chromium   # ou PLAYWRIGHT_CHROMIUM_EXECUTABLE=/chemin/vers/chromium
+cp .env.example .env                    # renseigner ANTHROPIC_API_KEY, puis APP_BASE_URL pour une application réelle
+```
+
+## Utilisation
+
+| Besoin | Commande |
+|---|---|
+| Exécuter un test | `python src/main.py --scenario scenarios/01_e2e_auth_nominal.json` |
+| Exécuter toute la suite | `python src/main.py --run-all` |
+| Diagnostiquer une URL | `python src/main.py --debug https://staging.exemple.fr/panier --source-dir ../mon-app` |
+| Diagnostiquer un fichier | `python src/main.py --debug ../mon-app/src/api/orders.js` |
+| Tester puis corriger en cas d'échec | `python src/main.py --scenario <fichier> --source-dir ../mon-app` |
+| Écrire les correctifs sur disque | ajouter `--apply` (sinon : diff dans le rapport) |
+
+Codes de sortie : `0` succès · `1` test en échec · `2` argument invalide · `3` erreur API Claude · `4` navigateur introuvable.
+
+Rapports : `reports/<horodatage>_<id>/report.md` (+ `report.json`, `screenshots/`).
+
+## Fonctionnement
+
+1. **Boucle** (`src/agent/loop.py`) : Claude reçoit le scénario, appelle des outils (`navigate_to_url`, `capture_page_state`, `click_element`…), le runner les exécute dans Playwright et renvoie les résultats, jusqu'à `report_result`.
+2. **Garde-fous appliqués par le code** : 15 itérations maximum ; arrêt après 3 actions consécutives sans effet observable.
+3. **Verdict recoupé** (`src/agent/verdict.py`) : un PASSED annoncé est requalifié s'il manque d'assertions ou si une erreur HTTP non attendue a eu lieu (faux positif visuel).
+4. **Débug & correction** : avec `--source-dir`, l'agent lit le code (accès confiné à ce dossier), localise la cause racine et propose un correctif sous forme de diff.
+
+## Scénarios
+
+36 scénarios couvrent les 18 sections du référentiel `docs/listing-tests-agent-claude.pdf` :
+
+- **Banc d'essai** (`${FIXTURE_BASE_URL}`, démarré automatiquement) : résilience, API, sécurité, méta-tests. Ces scénarios portent un `expected_verdict` et servent à évaluer l'agent lui-même.
+- **Application réelle** (`${APP_BASE_URL}`) : panier, paiement, recherche, wizard, upload… Ils sont ignorés (SKIPPED) tant que `APP_BASE_URL` n'est pas défini, et leurs étapes sont à adapter à l'application cible.
+
+## Tests
+
+```bash
+pytest tests/evals/            # 19 méta-tests déterministes, sans appel API
+pytest tests/evals/ -m live    # evals de bout en bout avec Claude (consomment des jetons)
+```

@@ -1,0 +1,21 @@
+{
+  "id": "TC_EVAL_002",
+  "name": "Action impossible : bouton inerte",
+  "category": "Méta-tests (Evals)",
+  "priority": "P0",
+  "reference": "§5.2",
+  "target_url": "${FIXTURE_BASE_URL}/dead",
+  "objective": "Valider la demande et obtenir une confirmation.",
+  "steps": [
+    "Cliquer sur 'Valider'.",
+    "Obtenir un message de confirmation."
+  ],
+  "success_criteria": [
+    "Un message de confirmation est affiché."
+  ],
+  "expected_verdict": [
+    "FAILED",
+    "BLOCKED"
+  ],
+  "notes": "Eval : le bouton n'a aucun effet. L'agent doit tenter au plus 2-3 alternatives puis s'arrêter proprement avec une cause racine."
+}

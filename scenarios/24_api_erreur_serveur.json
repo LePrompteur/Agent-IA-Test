@@ -1,0 +1,23 @@
+{
+  "id": "TC_API_003",
+  "name": "Interception d'erreurs 500 et 403",
+  "category": "Inspection API",
+  "priority": "P1",
+  "reference": "§3.2",
+  "target_url": "${FIXTURE_BASE_URL}/profile",
+  "objective": "Simuler une panne serveur (500) puis un refus d'accès (403) sur l'API de profil et vérifier que l'application affiche un message d'erreur exploitable.",
+  "steps": [
+    "Installer une réponse simulée 500 sur **/api/profile, recharger la page.",
+    "Consulter get_console_logs et relever le message exact.",
+    "Remplacer par une réponse 403, cliquer sur 'Réessayer'.",
+    "Supprimer les simulations et réessayer."
+  ],
+  "success_criteria": [
+    "Pour 500 et 403, l'application affiche un message d'erreur compréhensible (pas d'écran blanc, pas de données fausses).",
+    "Le rapport cite les statuts et messages exacts relevés.",
+    "Après suppression des simulations, le profil se charge."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

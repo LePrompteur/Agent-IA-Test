@@ -1,0 +1,26 @@
+{
+  "id": "TC_E2E_006",
+  "name": "Téléversement de fichiers autorisés et interdits",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.2",
+  "target_url": "${APP_BASE_URL}${APP_UPLOAD_PATH:-/documents}",
+  "objective": "Vérifier que les formats autorisés sont acceptés et que les formats interdits sont rejetés avec un message explicite.",
+  "steps": [
+    "Téléverser sample.pdf puis sample.png : ils doivent être acceptés.",
+    "Téléverser fake_installer.exe : il doit être rejeté.",
+    "Si disponible, téléverser large.bin (voir notes) : il doit être rejeté pour taille excessive."
+  ],
+  "success_criteria": [
+    "Les formats autorisés sont acceptés (message ou fichier listé).",
+    "Les formats interdits sont rejetés avec un message lisible.",
+    "Aucune erreur 5xx lors des rejets (un 4xx est attendu)."
+  ],
+  "expected_http_errors": [
+    400,
+    413,
+    415,
+    422
+  ],
+  "notes": "Fichiers disponibles dans tests/fixtures/uploads/. large.bin n'est pas versionné : le générer avec `python -c \"open('tests/fixtures/uploads/large.bin','wb').write(b'0'*25_000_000)\"`."
+}

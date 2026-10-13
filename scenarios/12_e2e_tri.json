@@ -1,0 +1,17 @@
+{
+  "id": "TC_E2E_012",
+  "name": "Tri dynamique",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.4",
+  "target_url": "${APP_BASE_URL}${APP_SEARCH_PATH:-/recherche}",
+  "objective": "Changer l'ordre d'affichage (prix croissant, nouveautés) et vérifier la séquence dans le DOM.",
+  "steps": [
+    "Trier par prix croissant et relever les prix des 10 premiers résultats.",
+    "Trier par nouveautés et vérifier l'ordre des dates si elles sont affichées."
+  ],
+  "success_criteria": [
+    "Les prix relevés sont dans l'ordre croissant.",
+    "Le changement de tri modifie effectivement l'ordre des résultats."
+  ]
+}

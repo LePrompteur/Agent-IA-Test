@@ -1,0 +1,18 @@
+{
+  "id": "TC_E2E_007",
+  "name": "Maintien d'état intermédiaire après rafraîchissement",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.2",
+  "target_url": "${APP_BASE_URL}${APP_WIZARD_PATH:-/inscription}",
+  "objective": "Interrompre un formulaire à une étape avancée, recharger la page et vérifier la persistance des saisies.",
+  "steps": [
+    "Avancer jusqu'à l'étape 2 en remplissant les champs.",
+    "Recharger la page (browser_navigation reload).",
+    "Vérifier l'étape affichée et les valeurs conservées."
+  ],
+  "success_criteria": [
+    "Après rechargement, l'utilisateur est à la même étape ou un message explique la reprise.",
+    "Les valeurs saisies sont conservées (ou leur perte est signalée explicitement à l'utilisateur)."
+  ]
+}

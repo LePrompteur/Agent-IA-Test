@@ -1,0 +1,24 @@
+{
+  "id": "TC_RES_006",
+  "name": "Popup promotionnelle surgissante",
+  "category": "Résilience UI",
+  "priority": "P1",
+  "reference": "§2.3",
+  "target_url": "${FIXTURE_BASE_URL}/promo",
+  "objective": "S'abonner à la newsletter malgré une fenêtre promotionnelle qui surgit après le chargement.",
+  "steps": [
+    "Charger la page.",
+    "Fermer la popup lorsqu'elle apparaît.",
+    "S'abonner à la newsletter."
+  ],
+  "success_criteria": [
+    "La popup est fermée.",
+    "Le message 'Abonnement confirmé' est affiché."
+  ],
+  "test_data": {
+    "email": "newsletter@test.com"
+  },
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

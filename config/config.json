@@ -1,0 +1,27 @@
+{
+  "max_iterations": 15,
+  "debug_max_iterations": 25,
+  "no_change_limit": 3,
+  "timeout_seconds": 300,
+  "headless": true,
+  "browser_executable": null,
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "screenshot_on_failure": true,
+  "action_timeout_ms": 5000,
+  "navigation_timeout_ms": 20000,
+  "settle_ms": 400,
+  "max_wait_seconds": 20,
+  "max_state_items": 150,
+  "max_state_text_chars": 3000,
+  "upload_dir": "tests/fixtures/uploads",
+  "llm": {
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "max_tokens": 16000,
+    "max_retries": 3,
+    "refusal_fallbacks": true
+  }
+}

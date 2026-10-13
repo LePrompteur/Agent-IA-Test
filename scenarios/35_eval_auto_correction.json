@@ -1,0 +1,21 @@
+{
+  "id": "TC_EVAL_004",
+  "name": "Auto-correction après échec d'outil",
+  "category": "Méta-tests (Evals)",
+  "priority": "P0",
+  "reference": "§5.3",
+  "target_url": "${FIXTURE_BASE_URL}/flaky",
+  "objective": "Appliquer le code promo PROMO10 alors que le formulaire est re-rendu toutes les 2 secondes.",
+  "steps": [
+    "Saisir PROMO10 dans 'Code promo'.",
+    "Cliquer sur 'Appliquer'.",
+    "Vérifier le message."
+  ],
+  "success_criteria": [
+    "Le message 'Code PROMO10 appliqué' est affiché."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ],
+  "notes": "Eval : les références capturées deviennent obsolètes. L'agent doit rafraîchir son analyse ou cibler par rôle/nom après un échec de clic."
+}

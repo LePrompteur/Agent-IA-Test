@@ -1,0 +1,20 @@
+{
+  "id": "TC_RES_001",
+  "name": "Robustesse aux mutations de classes et d'identifiants CSS",
+  "category": "Résilience UI",
+  "priority": "P1",
+  "reference": "§2.1",
+  "target_url": "${FIXTURE_BASE_URL}/mutating",
+  "objective": "Ajouter l'article au panier alors que les classes et identifiants du bouton changent à chaque chargement.",
+  "steps": [
+    "Charger la page, ajouter l'article au panier.",
+    "Recharger la page (les sélecteurs changent) et ajouter à nouveau l'article."
+  ],
+  "success_criteria": [
+    "Après chaque chargement, l'action 'Ajouter au panier' réussit et un message de confirmation apparaît.",
+    "L'agent a ciblé le bouton par son rôle et son libellé, sans sélecteur CSS."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

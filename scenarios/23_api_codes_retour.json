@@ -1,0 +1,21 @@
+{
+  "id": "TC_API_002",
+  "name": "Contrôle des codes de retour des écritures",
+  "category": "Inspection API",
+  "priority": "P1",
+  "reference": "§3.1",
+  "target_url": "${FIXTURE_BASE_URL}/order",
+  "objective": "Passer une commande et vérifier que l'API de création renvoie 201 Created, puis que la lecture renvoie 200 OK.",
+  "steps": [
+    "Cliquer sur 'Passer la commande'.",
+    "Contrôler les requêtes /api/orders (POST puis GET)."
+  ],
+  "success_criteria": [
+    "Le POST /api/orders renvoie 201.",
+    "Le GET /api/orders renvoie 200.",
+    "Le message de confirmation affiche un numéro de commande."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

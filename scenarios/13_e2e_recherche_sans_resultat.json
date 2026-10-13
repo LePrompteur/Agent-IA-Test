@@ -1,0 +1,17 @@
+{
+  "id": "TC_E2E_013",
+  "name": "Recherche sans résultat",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.4",
+  "target_url": "${APP_BASE_URL}${APP_SEARCH_PATH:-/recherche}",
+  "objective": "Saisir un terme inexistant et vérifier l'affichage d'un message informatif.",
+  "steps": [
+    "Rechercher 'zzqxwv-inexistant-9431'.",
+    "Lire la zone de résultats."
+  ],
+  "success_criteria": [
+    "Un message explicite indique l'absence de résultat.",
+    "Aucune erreur HTTP 5xx ni erreur console."
+  ]
+}

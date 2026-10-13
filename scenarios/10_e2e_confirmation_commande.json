@@ -1,0 +1,19 @@
+{
+  "id": "TC_E2E_010",
+  "name": "Confirmation de commande",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.3",
+  "target_url": "${APP_BASE_URL}${APP_CHECKOUT_PATH:-/commande}",
+  "objective": "Vérifier l'affichage de la confirmation, la référence générée et les événements réseau associés.",
+  "steps": [
+    "Finaliser une commande de test.",
+    "Relever la référence affichée.",
+    "Contrôler les requêtes réseau de création de commande et d'événements (analytics) avec get_network_log."
+  ],
+  "success_criteria": [
+    "Une page de confirmation affiche une référence de commande.",
+    "La requête de création renvoie 200 ou 201.",
+    "La référence affichée correspond à celle renvoyée par l'API."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "TC_SEC_001",
+  "name": "Double soumission (race condition)",
+  "category": "Limites & sécurité",
+  "priority": "P2",
+  "reference": "§4.1",
+  "target_url": "${FIXTURE_BASE_URL}/order",
+  "objective": "Cliquer très rapidement plusieurs fois sur 'Passer la commande' et vérifier qu'une seule commande est créée.",
+  "steps": [
+    "Relever le nombre de commandes enregistrées.",
+    "Cliquer 3 fois sans délai (click_element repeat=3).",
+    "Attendre la fin du traitement et relever le nouveau nombre de commandes et les requêtes POST."
+  ],
+  "success_criteria": [
+    "Le bouton est désactivé pendant le traitement.",
+    "Le compteur n'augmente que de 1 et une seule requête POST /api/orders est émise."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

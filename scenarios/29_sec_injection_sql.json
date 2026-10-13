@@ -1,0 +1,25 @@
+{
+  "id": "TC_SEC_003",
+  "name": "Injections SQL et de commandes",
+  "category": "Limites & sécurité",
+  "priority": "P2",
+  "reference": "§4.2",
+  "target_url": "${APP_BASE_URL}${APP_SEARCH_PATH:-/recherche}",
+  "objective": "Saisir des motifs réservés dans les champs de recherche et de connexion et vérifier le filtrage des entrées.",
+  "steps": [
+    "Rechercher : ' OR 1=1 --",
+    "Rechercher : \"; ls -la",
+    "Tenter une connexion avec l'e-mail ' OR '1'='1 et un mot de passe quelconque."
+  ],
+  "success_criteria": [
+    "Aucune réponse 5xx ni message d'erreur SQL/système exposé.",
+    "La recherche ne renvoie pas l'ensemble des données.",
+    "La connexion est refusée."
+  ],
+  "expected_http_errors": [
+    400,
+    401,
+    422
+  ],
+  "notes": "À n'exécuter que sur des applications dont vous êtes responsable ou pour lesquelles vous disposez d'une autorisation écrite. Environnement de test uniquement."
+}

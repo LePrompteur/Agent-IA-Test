@@ -1,0 +1,27 @@
+{
+  "id": "TC_E2E_002",
+  "name": "Échec d'authentification",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.1",
+  "target_url": "${FIXTURE_BASE_URL}/login",
+  "objective": "Vérifier qu'un mot de passe erroné est refusé avec un message d'erreur qui ne révèle pas si le compte existe.",
+  "steps": [
+    "Saisir l'e-mail valide et le mot de passe 'MauvaisMotDePasse!'.",
+    "Soumettre.",
+    "Lire le message d'erreur et vérifier l'URL."
+  ],
+  "success_criteria": [
+    "L'utilisateur reste sur la page de connexion.",
+    "Un message d'erreur est affiché dans la page.",
+    "Le message ne précise pas lequel des deux champs est faux (pas de fuite d'information).",
+    "Aucun cookie de session n'est créé."
+  ],
+  "test_data": {
+    "email": "${TEST_USER_EMAIL:-user@test.com}",
+    "password": "MauvaisMotDePasse!"
+  },
+  "expected_http_errors": [
+    401
+  ]
+}

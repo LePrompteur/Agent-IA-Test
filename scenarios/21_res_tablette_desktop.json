@@ -1,0 +1,20 @@
+{
+  "id": "TC_RES_008",
+  "name": "Formats tablette et desktop (768 px / 1080p)",
+  "category": "Résilience UI",
+  "priority": "P1",
+  "reference": "§2.4",
+  "target_url": "${FIXTURE_BASE_URL}/responsive",
+  "objective": "Vérifier la visibilité de la navigation et du contenu principal en 768x1024 puis 1920x1080.",
+  "steps": [
+    "Régler le viewport en 768x1024 et capturer l'état.",
+    "Régler le viewport en 1920x1080 et capturer l'état."
+  ],
+  "success_criteria": [
+    "Dans les deux formats, les liens de navigation sont directement visibles sans burger.",
+    "Le titre principal est visible."
+  ],
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

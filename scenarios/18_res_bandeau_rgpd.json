@@ -1,0 +1,24 @@
+{
+  "id": "TC_RES_005",
+  "name": "Bandeau de cookies RGPD bloquant",
+  "category": "Résilience UI",
+  "priority": "P1",
+  "reference": "§2.3",
+  "target_url": "${FIXTURE_BASE_URL}/cookies",
+  "objective": "S'abonner à la newsletter malgré un bandeau de cookies bloquant affiché au chargement.",
+  "steps": [
+    "Détecter le bandeau bloquant.",
+    "Le fermer (accepter ou refuser).",
+    "Saisir l'e-mail et cliquer sur 'S'abonner'."
+  ],
+  "success_criteria": [
+    "Le bandeau a été fermé avant la reprise du scénario.",
+    "Le message 'Abonnement confirmé' est affiché et la requête renvoie 2xx."
+  ],
+  "test_data": {
+    "email": "newsletter@test.com"
+  },
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

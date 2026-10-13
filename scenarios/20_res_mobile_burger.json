@@ -1,0 +1,25 @@
+{
+  "id": "TC_RES_007",
+  "name": "Format mobile (375 px) : menu burger",
+  "category": "Résilience UI",
+  "priority": "P1",
+  "reference": "§2.4",
+  "target_url": "${FIXTURE_BASE_URL}/responsive",
+  "objective": "En largeur mobile, atteindre la page Contact via le menu burger.",
+  "steps": [
+    "Vérifier que les liens de navigation ne sont pas visibles directement.",
+    "Ouvrir le menu burger.",
+    "Cliquer sur 'Contact'."
+  ],
+  "success_criteria": [
+    "Le menu burger a été ouvert avant le clic sur le lien.",
+    "La page Contact est affichée."
+  ],
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "expected_verdict": [
+    "PASSED"
+  ]
+}

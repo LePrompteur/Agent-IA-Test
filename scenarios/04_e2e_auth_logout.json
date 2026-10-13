@@ -1,0 +1,24 @@
+{
+  "id": "TC_E2E_004",
+  "name": "Déconnexion et invalidation de session",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.1",
+  "target_url": "${FIXTURE_BASE_URL}/login",
+  "objective": "Se connecter, se déconnecter, puis vérifier que la session est invalidée et que la navigation arrière ne redonne pas accès au tableau de bord.",
+  "steps": [
+    "Se connecter avec les identifiants fournis.",
+    "Cliquer sur 'Se déconnecter'.",
+    "Inspecter cookies et localStorage.",
+    "Utiliser 'Précédent' (browser_navigation back), puis recharger.",
+    "Vérifier que le tableau de bord n'est plus accessible."
+  ],
+  "success_criteria": [
+    "Après déconnexion, aucun cookie de session ni jeton en localStorage.",
+    "Le retour arrière puis le rechargement ne réaffichent pas le tableau de bord (redirection vers la connexion)."
+  ],
+  "test_data": {
+    "email": "${TEST_USER_EMAIL:-user@test.com}",
+    "password": "${TEST_USER_PASSWORD:-Password123!}"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "TC_E2E_005",
+  "name": "Formulaire multi-étapes et champs dépendants",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.2",
+  "target_url": "${APP_BASE_URL}${APP_WIZARD_PATH:-/inscription}",
+  "objective": "Remplir un formulaire multi-étapes en vérifiant la mise à jour dynamique des champs dépendants (ex. pays → villes).",
+  "steps": [
+    "Remplir l'étape 1 et passer à la suivante.",
+    "Choisir un pays, vérifier que la liste des villes est mise à jour.",
+    "Changer de pays et vérifier que la ville précédente est réinitialisée.",
+    "Terminer le parcours."
+  ],
+  "success_criteria": [
+    "La liste dépendante change avec la valeur parente.",
+    "Chaque étape valide ses champs obligatoires.",
+    "La soumission finale renvoie un statut 2xx et un message de confirmation."
+  ],
+  "test_data": {
+    "pays_1": "France",
+    "pays_2": "Belgique"
+  }
+}

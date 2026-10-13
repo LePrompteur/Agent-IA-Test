@@ -1,0 +1,28 @@
+{
+  "id": "TC_E2E_009",
+  "name": "Saisie de livraison et paiement par carte de test",
+  "category": "E2E",
+  "priority": "P0",
+  "reference": "§1.3",
+  "target_url": "${APP_BASE_URL}${APP_CHECKOUT_PATH:-/commande}",
+  "objective": "Saisir une adresse, choisir un mode de livraison et simuler un règlement par carte de test.",
+  "steps": [
+    "Avec un panier non vide, ouvrir la page de commande.",
+    "Saisir une adresse invalide (code postal '00') et vérifier le message de validation.",
+    "Corriger l'adresse.",
+    "Choisir un mode de livraison et vérifier l'impact sur le total.",
+    "Payer avec la carte de test."
+  ],
+  "success_criteria": [
+    "L'adresse invalide est refusée avec un message.",
+    "Le total intègre les frais de livraison choisis.",
+    "Le paiement de test est accepté (réponse 2xx)."
+  ],
+  "test_data": {
+    "adresse": "10 rue de la Paix, 75002 Paris",
+    "carte": "4242 4242 4242 4242",
+    "expiration": "12/34",
+    "cvc": "123"
+  },
+  "notes": "Utiliser exclusivement une carte de test du prestataire de paiement (environnement sandbox)."
+}

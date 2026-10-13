@@ -1,0 +1,18 @@
+{
+  "id": "TC_NAV_001",
+  "name": "Précédent / Suivant dans un tunnel transactionnel",
+  "category": "Limites & sécurité",
+  "priority": "P2",
+  "reference": "§4.3",
+  "target_url": "${APP_BASE_URL}${APP_CHECKOUT_PATH:-/commande}",
+  "objective": "Utiliser Précédent puis Suivant au milieu du tunnel de commande et vérifier la cohérence de l'état.",
+  "steps": [
+    "Avancer jusqu'à l'étape livraison.",
+    "Précédent : vérifier le panier.",
+    "Suivant : vérifier que les saisies sont conservées ou que l'état est cohérent."
+  ],
+  "success_criteria": [
+    "Aucune commande en double ni paiement déclenché par la navigation.",
+    "L'état affiché est cohérent avec l'étape (pas d'erreur 5xx, pas de page blanche)."
+  ]
+}
