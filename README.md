@@ -56,13 +56,14 @@ Projet Railway `agent-ia-test`, environnement `dev`, service `qa-agent` (build `
 - **Rapports** : volume `qa-reports` monté sur `/app/reports`.
 - **Exécution planifiée** : renseigner un « Cron Schedule » sur le service (chaque exécution consomme des jetons Claude).
 
-## Base de données (Supabase auto-hébergé sur Railway) et migrations
+## Base de données (Supabase cloud) et migrations
 
-- Supabase est déployé dans l'environnement Railway `dev` (modèle `supabase` : Postgres, Studio, Auth, REST, Realtime, Storage, pooler Supavisor, passerelle Envoy). Redis tourne à côté (`REDIS_URL` en variable de référence).
-- **Migrations** : fichiers SQL horodatés dans `supabase/migrations/` (`supabase migration new <nom>`).
+- **Supabase** : projet `agent-ia-test` (réf. `dvssyttbibnqwqjetarm`, région Paris `eu-west-3`), organisation « Le Prompteur », offre gratuite. URL : `https://dvssyttbibnqwqjetarm.supabase.co` (variables partagées Railway `SUPABASE_URL`, `SUPABASE_PROJECT_REF`).
+- **Redis** : service Railway `Redis` dans l'environnement `dev` (`REDIS_URL` via variable de référence `${{Redis.REDIS_URL}}`).
+- **Migrations** : fichiers SQL horodatés dans `supabase/migrations/` (`supabase migration new <nom>`). Ne jamais modifier le schéma depuis le tableau de bord : toute modification passe par une migration versionnée.
 - **Workflow `.github/workflows/db-migrations.yml`** :
   - PR modifiant `supabase/migrations/**` → simulation puis application sur la base de dev (secret `SUPABASE_DEV_DB_URL`) ;
   - merge sur `main` → application sur la production (secret `SUPABASE_PROD_DB_URL`, environnement GitHub `production` à protéger par une validation manuelle) ;
   - exécutions sérialisées par base ; PR issues de forks ignorées (pas d'accès aux secrets).
-- **Secret à créer dans GitHub** (Settings → Secrets and variables → Actions) : `SUPABASE_DEV_DB_URL` = valeur de `POSTGRES_URL` du service Postgres Railway (connexion publique via proxy TCP).
+- **Secret GitHub à créer** (Settings → Secrets and variables → Actions) : `SUPABASE_DEV_DB_URL` = chaîne « Session pooler » du projet (Supabase → Connect → Session pooler, port 5432), mot de passe inclus. La connexion directe `db.<ref>.supabase.co` est en IPv6 seulement et n'est pas joignable depuis les runners GitHub.
 - Une migration appliquée n'est pas annulée automatiquement : pour revenir en arrière, écrire une nouvelle migration inverse.

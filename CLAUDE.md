@@ -28,6 +28,8 @@ Agent de test logiciel autonome basé sur Claude. Il exécute des scénarios de 
 
 ## Déploiement
 - Railway : projet `agent-ia-test`, environnement `dev`, service `qa-agent` (Dockerfile + `railway.json`, `restartPolicyType: NEVER`). Point d'entrée `scripts/railway-entrypoint.sh` : méta-tests, puis l'agent avec `$AGENT_ARGS` si `ANTHROPIC_API_KEY` est défini. Rapports sur le volume `/app/reports`.
+- Redis : service Railway `Redis` (environnement `dev`).
+- Supabase cloud : projet `agent-ia-test` (réf. `dvssyttbibnqwqjetarm`, `eu-west-3`). Schéma uniquement via `supabase/migrations/`, appliquées par `.github/workflows/db-migrations.yml` (PR → dev, `main` → production).
 - Vercel : non utilisé tant qu'il n'y a pas d'interface web.
 
 ## Format des Rapports
