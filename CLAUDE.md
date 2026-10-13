@@ -26,6 +26,10 @@ Agent de test logiciel autonome basé sur Claude. Il exécute des scénarios de 
 - Banc d'essai seul : `python -m tests.fixtures.app.server --port 8765`
 - Nettoyer les rapports : `rm -rf reports/2*`
 
+## Déploiement
+- Railway : projet `agent-ia-test`, environnement `dev`, service `qa-agent` (Dockerfile + `railway.json`, `restartPolicyType: NEVER`). Point d'entrée `scripts/railway-entrypoint.sh` : méta-tests, puis l'agent avec `$AGENT_ARGS` si `ANTHROPIC_API_KEY` est défini. Rapports sur le volume `/app/reports`.
+- Vercel : non utilisé tant qu'il n'y a pas d'interface web.
+
 ## Format des Rapports
 Chaque exécution crée `reports/<horodatage>_<id>/` contenant `report.json`, `report.md` (verdict, cause racine, assertions, actions, erreurs HTTP/console, correctifs en diff) et `screenshots/`. `--run-all` ajoute `summary.md` / `summary.json`. Les valeurs secrètes (variables `*PASSWORD*`, `*TOKEN*`, `*SECRET*`) sont masquées.
 

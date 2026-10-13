@@ -45,3 +45,13 @@ Rapports : `reports/<horodatage>_<id>/report.md` (+ `report.json`, `screenshots/
 pytest tests/evals/            # 19 méta-tests déterministes, sans appel API
 pytest tests/evals/ -m live    # evals de bout en bout avec Claude (consomment des jetons)
 ```
+
+## Déploiement Railway
+
+Projet Railway `agent-ia-test`, environnement `dev`, service `qa-agent` (build `Dockerfile`, config `railway.json`).
+
+- **Déclenchement** : chaque push sur la branche suivie reconstruit l'image et lance une exécution. Pour relancer sans push : « Redeploy » dans le tableau de bord.
+- **Une exécution** = méta-tests de l'image, puis `python src/main.py $AGENT_ARGS` si `ANTHROPIC_API_KEY` est défini. Le conteneur s'arrête ensuite (pas de redémarrage automatique).
+- **Variables** : `AGENT_ARGS` (défaut `--run-all --filter eval`), `ANTHROPIC_API_KEY` (à saisir dans le tableau de bord), `APP_BASE_URL` et identifiants pour une application réelle.
+- **Rapports** : volume `qa-reports` monté sur `/app/reports`.
+- **Exécution planifiée** : renseigner un « Cron Schedule » sur le service (chaque exécution consomme des jetons Claude).
