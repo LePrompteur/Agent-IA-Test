@@ -1,0 +1,105 @@
+name: PR – Qualité & déploiement
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # 1. Contrôles automatiques : lint, tests, build (= vérification que le projet se déploie)
+  ci:
+    name: Lint, tests & build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Détection de la stack
+        id: stack
+        run: |
+          [ -f package.json ] && echo "node=true" >> "$GITHUB_OUTPUT" || true
+          { [ -f requirements.txt ] || [ -f pyproject.toml ]; } && echo "python=true" >> "$GITHUB_OUTPUT" || true
+
+      # --- Node.js ---
+      - uses: actions/setup-node@v4
+        if: steps.stack.outputs.node == 'true'
+        with:
+          node-version: 22
+      - name: Node – install / lint / test / build
+        if: steps.stack.outputs.node == 'true'
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+          npm run lint --if-present
+          npm test --if-present
+          npm run build --if-present
+
+      # --- Python ---
+      - uses: actions/setup-python@v5
+        if: steps.stack.outputs.python == 'true'
+        with:
+          python-version: "3.12"
+      - name: Python – install / lint / test
+        if: steps.stack.outputs.python == 'true'
+        run: |
+          pip install ruff pytest
+          [ -f requirements.txt ] && pip install -r requirements.txt || true
+          [ -f pyproject.toml ] && pip install -e . || true
+          ruff check .
+          if ls tests test_*.py */test_*.py >/dev/null 2>&1; then pytest; fi
+
+  # 2. Revue de code par Claude, après la CI (même si elle échoue, pour expliquer l'échec)
+  claude-review:
+    name: Revue Claude
+    needs: ci
+    if: >-
+      always() &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: read
+      actions: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          track_progress: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+            RÉSULTAT CI (lint/tests/build) : ${{ needs.ci.result }}
+
+            La branche de la PR est déjà checkoutée dans le répertoire courant.
+            Rédige ta revue en français.
+
+            1. Qualité du code
+               - bugs et erreurs de logique, cas limites non gérés
+               - sécurité : secrets en dur, injections, validation des entrées
+               - lisibilité, duplication, cohérence avec le reste du code
+               - tests manquants pour les changements importants
+            2. Déploiement
+               - consulte l'état des checks avec `gh pr checks ${{ github.event.pull_request.number }}`
+                 (inclut les éventuels déploiements de prévisualisation : Vercel, Netlify, etc.)
+               - si la CI a échoué, identifie la cause probable à partir du diff
+               - repère les risques de déploiement : variables d'environnement nouvelles,
+                 migrations de base de données, dépendances ajoutées, changements de configuration
+
+            Commentaires inline (mcp__github_inline_comment__create_inline_comment, confirmed: true)
+            uniquement pour les problèmes réels et localisés. Pas de commentaires de style mineurs.
+            Termine par UN commentaire de synthèse (`gh pr comment`) avec :
+            - verdict : ✅ prêt à fusionner / ⚠️ à corriger / ❌ bloquant
+            - état du déploiement
+            - liste priorisée des points à traiter
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr checks:*),Read,Glob,Grep"
